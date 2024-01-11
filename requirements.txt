@@ -1,0 +1,5 @@
+python-dotenv
+requests
+toml
+requests
+PyGithub
