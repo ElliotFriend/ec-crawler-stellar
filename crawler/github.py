@@ -13,13 +13,11 @@ import logging
 from github import Auth, Github
 from github.GithubException import UnknownObjectException
 
-from crawler.constants import SEARCH_QUERIES, GITHUB_TOKEN
+from crawler.constants import BASE_GITHUB_URL, SEARCH_QUERIES, GITHUB_TOKEN
 
 logger = logging.getLogger(__name__)
 
-BASE_URL: str = "https://github.com/"
-
-auth = Auth.Token(GITHUB_TOKEN)
+auth = Auth.Token(GITHUB_TOKEN) if GITHUB_TOKEN else None
 g = Github(auth=auth)
 g.per_page = 100
 
@@ -64,7 +62,7 @@ def get_org_repos(org_url: str) -> set[str]:
     try:
         repos = g.get_organization(org_name).get_repos()
         for repo in repos:
-            org_repos.add(f"{BASE_URL}{repo.full_name}")
+            org_repos.add(f"{BASE_GITHUB_URL}{repo.full_name}")
     except UnknownObjectException:
         pass
 

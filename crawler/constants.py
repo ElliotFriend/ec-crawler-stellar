@@ -4,12 +4,41 @@ Constants
 
 This module is where the relevant constants are stored, to be accessed from any
 other module that needs access to them.
+
+To customize this package for use in other ecosystems, you "should" only have to
+modify the constants here (or in the `.env` file) before you're off to the
+races!
 """
 
 import os
 
-GITHUB_TOKEN: str = os.getenv("GITHUB_TOKEN")
-BASE_REPO_PATH: str = os.getenv("BASE_REPO_PATH")
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Constants and configurations
+GITHUB_TOKEN: str | None = os.getenv("GITHUB_TOKEN")
+BASE_REPO_PATH: str | None = os.getenv("BASE_REPO_PATH")
+BASE_GITHUB_URL: str = "https://github.com/"
+BASE_ECOSYSTEM: str = "Stellar"
+DISCLAIMER_MESSAGE: str = """Welcome to the Stellar EC Scraper!
+
+This script will modify the relevant ecosystem TOML file(s) **in place**. So,
+it's really important that you have done three (3) things:
+
+1. You have specified in the `.env` file, the absolute path to your local clone
+   of the EC repo, and
+2. Your local clone's `master` branch is up-to-date with the upstream EC repo,
+   and
+3. You should also check out a new branch your changes can be applied to. (This
+   script won't apply any changes to your repo, but it could make it easier on
+   you later if you're already on a new branch.)
+
+If you haven't done those three (3) things, you could possibly screw up your
+local clone. So, you might just double-check...
+
+Please confirm below with '[y]es' or '[n]o'
+"""
 
 SEARCH_QUERIES: dict[str, list[dict[str, str]]] = {
     "cheesecake-labs": [

@@ -27,7 +27,7 @@ def parse_toml_file(filepath: str) -> dict:
     doc = file.read()
     sub_ecos = doc.get("sub_ecosystems")
     gh_orgs = doc.get("github_organizations")
-    repo = doc.get("repo").unwrap()
+    repo = doc.get("repo")
 
     return {
         "doc": doc,

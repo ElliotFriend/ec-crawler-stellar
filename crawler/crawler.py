@@ -17,41 +17,19 @@ keyword to search for.
 
 import logging
 
-from dotenv import load_dotenv
-
-load_dotenv()
+from crawler.constants import BASE_ECOSYSTEM, DISCLAIMER_MESSAGE
+from crawler.ecosystem import process_ecosystem
 
 # Configure logging
 logger = logging.getLogger(__name__)
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(name)s\t-%(levelname)s - %(message)s",
+    format="%(asctime)s - %(name)s\t- %(levelname)s - %(message)s",
     handlers=[
         logging.FileHandler("stellar-ec-crawler.log"),  # Write logs to this file
         logging.StreamHandler(),  # And also print them to the console
     ],
 )
-
-# Constants and configurations
-BASE_ECOSYSTEM: str = "Stellar"
-DISCLAIMER_MESSAGE: str = """Welcome to the Stellar EC Scraper!
-
-This script will modify the relevant ecosystem TOML file(s) **in place**. So,
-it's really important that you have done three (3) things:
-
-1. You have specified in the `.env` file, the absolute path to your local clone
-   of the EC repo, and
-2. Your local clone's `master` branch is up-to-date with the upstream EC repo,
-   and
-3. You should also check out a new branch your changes can be applied to. (This
-   script won't apply any changes to your repo, but it could make it easier on
-   you later if you're already on a new branch.)
-
-If you haven't done those three (3) things, you could possibly screw up your
-local clone. So, you might just double-check...
-
-Please confirm below with '[y]es' or '[n]o'
-"""
 
 
 def main():
@@ -60,9 +38,6 @@ def main():
     answer = input("Is your locally cloned repo ready? ")
 
     if answer.lower() == "yes" or answer.lower() == "y":
-        # pylint: disable=import-outside-toplevel
-        from crawler.ecosystem import process_ecosystem
-
         logger.info("Main function started.")
         process_ecosystem(BASE_ECOSYSTEM)
 
