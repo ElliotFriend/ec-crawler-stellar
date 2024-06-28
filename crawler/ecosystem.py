@@ -1,7 +1,12 @@
+"""
+Ecosystem
+---------
+
+The main workhorse of the package! This module is responsible for managing the
+process of the crawl.
+"""
+
 import logging
-
-logger = logging.getLogger(__name__)
-
 import os
 
 from operator import itemgetter
@@ -10,16 +15,29 @@ from crawler.github import get_org_repos, search_gh_repos
 from crawler.tomlkit import parse_toml_file, save_toml_file
 
 BASE_REPO_PATH: str = os.getenv("BASE_REPO_PATH")
+logger = logging.getLogger(__name__)
 
 
 def parse_eco_filename(ecosystem_name: str) -> list[str]:
+    """Parse the provided ecosystem name into a filepath-like string.
+
+    :param ecosystem_name: The name of the ecosystem, as written in an EC TOML file.
+    :type ecosystem_name: str
+    :return: A list containing the first letter of the ecosystem, followed by a filepath-friendly name.
+    :rtype: list[str]
+    """
     return [
         ecosystem_name[0].lower(),
         "-".join(ecosystem_name.split()).lower().replace("(", "").replace(")", ""),
     ]
 
 
-def process_ecosystem(ecosystem_name: str):
+def process_ecosystem(ecosystem_name: str) -> None:
+    """Process the ecosystem, managing the entire process.
+
+    :param ecosystem_name: The name of the ecosystem, as written in an EC TOML file.
+    :type ecosystem_name: str
+    """
     ecosystem_repos: set[str] = set()
     [s, ecosystem] = parse_eco_filename(ecosystem_name)
     filepath: str = f"{BASE_REPO_PATH}/data/ecosystems/{s}/{ecosystem}.toml"
@@ -50,7 +68,7 @@ def process_ecosystem(ecosystem_name: str):
         logger.info("No new repositories found")
         return
 
-    # 4. sort and add eco_repos to toml repo, save to disk
+    # 4. sort and add new_repos to toml repo, save to disk
     logger.info("Found %d new repositories.", len(new_repos))
     repo_list = list({"url": r} for r in new_repos)
     repo.extend(repo_list)

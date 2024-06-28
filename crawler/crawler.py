@@ -1,3 +1,20 @@
+"""## Crawler
+
+The entry point of the package! Here, we grab the Github token, defined the base
+(or 'starting') ecosystem we'll crawl, configure logging, and make sure the user
+is ready to go.
+
+Then, user will be presented with a 'hey, don't forget to make a new branch'
+kind-of message. After confirming, the `process_ecosystem()` function is called,
+with our base ecosystem's name as an argument.
+
+This is also where we have some of our most important constants defined. Most
+especially, `SEARCH_QUERIES`. This dictionary is indexed by ecosystem name (the
+filename with no extension) that has relevant packages we want to search for.
+Define search queries in these ecosystems using filename (or path) and the
+keyword to search for.
+"""
+
 import logging
 import os
 from dotenv import load_dotenv
@@ -17,7 +34,7 @@ logging.basicConfig(
 
 # Constants and configurations
 GITHUB_TOKEN: str = os.getenv("GITHUB_TOKEN")
-BASE_ECOSYSTEM: str = "stellar"
+BASE_ECOSYSTEM: str = "Stellar"
 DISCLAIMER_MESSAGE: str = """Welcome to the Stellar EC Scraper!
 
 This script will modify the relevant ecosystem TOML file(s) **in place**. So,
@@ -93,8 +110,6 @@ SEARCH_QUERIES: dict[str, list[dict[str, str]]] = {
         # Scala
         # (this has been unmaintained for a while, but is it useful to still include?)
         {"filename": "build.sbt", "keyword": "scala-stellar-sdk"},
-        # {"filename": "pom.xml", "keyword": "scala-stellar-sdk"}, # already covered with Java SDK
-        # {"filename": "build.gradle", "keyword": "scala-stellar-sdk"}, # already covered with Java SDK
         # Qt/C++
         # (this has been unmaintained for a while, but is it useful to still include?)
         {"path": "*.pro", "keyword": "StellarQtSDK.pri"},
