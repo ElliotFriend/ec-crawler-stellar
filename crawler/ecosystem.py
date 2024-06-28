@@ -7,40 +7,39 @@ process of the crawl.
 """
 
 import logging
-import os
 
 from operator import itemgetter
 
 from crawler.github import get_org_repos, search_gh_repos
 from crawler.tomlkit import parse_toml_file, save_toml_file
 
-BASE_REPO_PATH: str = os.getenv("BASE_REPO_PATH")
+from crawler.constants import BASE_REPO_PATH
+
 logger = logging.getLogger(__name__)
 
 
-def parse_eco_filename(ecosystem_name: str) -> list[str]:
+def parse_eco_filename(ecosystem_name: str) -> str:
     """Parse the provided ecosystem name into a filepath-like string.
 
-    :param ecosystem_name: The name of the ecosystem, as written in an EC TOML file.
+    :param ecosystem_name: The name of the ecosystem, as written in an EC TOML
+        file.
     :type ecosystem_name: str
-    :return: A list containing the first letter of the ecosystem, followed by a filepath-friendly name.
-    :rtype: list[str]
+    :return: A filepath-friendly string of the ecosystem name..
+    :rtype: str
     """
-    return [
-        ecosystem_name[0].lower(),
-        "-".join(ecosystem_name.split()).lower().replace("(", "").replace(")", ""),
-    ]
+    return "-".join(ecosystem_name.split()).lower().replace("(", "").replace(")", "")
 
 
 def process_ecosystem(ecosystem_name: str) -> None:
     """Process the ecosystem, managing the entire process.
 
-    :param ecosystem_name: The name of the ecosystem, as written in an EC TOML file.
+    :param ecosystem_name: The name of the ecosystem, as written in an EC TOML
+        file.
     :type ecosystem_name: str
     """
     ecosystem_repos: set[str] = set()
-    [s, ecosystem] = parse_eco_filename(ecosystem_name)
-    filepath: str = f"{BASE_REPO_PATH}/data/ecosystems/{s}/{ecosystem}.toml"
+    ecosystem = parse_eco_filename(ecosystem_name)
+    filepath: str = f"{BASE_REPO_PATH}/data/ecosystems/{ecosystem[0]}/{ecosystem}.toml"
 
     # 0. load/parse the TOML
     doc, sub_ecos, gh_orgs, repo = itemgetter("doc", "sub_ecos", "gh_orgs", "repo")(
@@ -53,6 +52,7 @@ def process_ecosystem(ecosystem_name: str) -> None:
         process_ecosystem(sub_eco)
 
     logger.info("Processing ecosystem: %s", ecosystem)
+
     # 2. add github org repos
     for org in gh_orgs:
         org_repos = get_org_repos(org)

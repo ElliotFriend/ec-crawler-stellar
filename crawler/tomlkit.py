@@ -8,8 +8,8 @@ functions are wrappers around the `tomlkit` package.
 
 import logging
 
-from tomlkit.toml_file import TOMLFile
 from tomlkit import TOMLDocument
+from tomlkit.toml_file import TOMLFile
 
 logger = logging.getLogger(__name__)
 
