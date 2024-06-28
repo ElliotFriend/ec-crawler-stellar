@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "crawler"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+python-dotenv = "^1.0.1"
+requests = "^2.32.3"
+toml = "^0.10.2"
+pygithub = "^2.3.0"
+tomlkit = "^0.12.5"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.2"
+black = "^24.4.2"
+mypy = "^1.10.0"
+pylint = "^3.2.3"
+pdoc3 = "^0.10.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+crawl = "crawler.crawler:main"
+
+[tool.tomlsort]
+all = true
+in_place = true
