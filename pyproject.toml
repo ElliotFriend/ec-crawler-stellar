@@ -20,6 +20,15 @@ black = "^24.4.2"
 mypy = "^1.10.0"
 pylint = "^3.2.3"
 pdoc3 = "^0.10.0"
+isort = "^5.13.2"
+types-requests = "^2.32.0.20240622"
+types-toml = "^0.10.8.20240310"
+
+[tool.pylint.format]
+max-line-length = "88"
+
+[tool.isort]
+profile = "black"
 
 [build-system]
 requires = ["poetry-core"]
@@ -27,7 +36,3 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 crawl = "crawler.crawler:main"
-
-[tool.tomlsort]
-all = true
-in_place = true

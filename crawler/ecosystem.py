@@ -7,13 +7,11 @@ process of the crawl.
 """
 
 import logging
-
 from operator import itemgetter
 
+from crawler.constants import BASE_REPO_PATH
 from crawler.github import get_org_repos, search_gh_repos
 from crawler.tomlkit import parse_toml_file, save_toml_file
-
-from crawler.constants import BASE_REPO_PATH
 
 logger = logging.getLogger(__name__)
 

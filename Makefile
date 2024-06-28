@@ -12,6 +12,10 @@ test:
 	poetry run mypy crawler/
 .PHONY: test
 
+format:
+	pre-commit run --all-file
+.PHONY: format
+
 lint:
 	@echo ♻️ Reformatting Code
 	poetry run black .

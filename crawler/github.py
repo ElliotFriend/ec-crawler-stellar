@@ -13,7 +13,7 @@ import logging
 from github import Auth, Github
 from github.GithubException import UnknownObjectException
 
-from crawler.constants import BASE_GITHUB_URL, SEARCH_QUERIES, GITHUB_TOKEN
+from crawler.constants import BASE_GITHUB_URL, GITHUB_TOKEN, SEARCH_QUERIES
 
 logger = logging.getLogger(__name__)
 
