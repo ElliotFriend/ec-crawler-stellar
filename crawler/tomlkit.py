@@ -1,7 +1,9 @@
 import logging
+
 logger = logging.getLogger(__name__)
 
 from tomlkit.toml_file import TOMLFile
+
 
 def parse_toml_file(filepath: str):
     logger.info("Parsing TOML file: %s", filepath)
@@ -17,6 +19,7 @@ def parse_toml_file(filepath: str):
         "gh_orgs": gh_orgs,
         "repo": repo,
     }
+
 
 def save_toml_file(toml_doc, filepath) -> None:
     logger.info("Saving TOML file: %s", filepath)

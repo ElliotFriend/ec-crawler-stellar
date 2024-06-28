@@ -1,6 +1,7 @@
 import logging
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 # Configure logging
@@ -42,10 +43,9 @@ SEARCH_QUERIES: dict[str, list[dict[str, str]]] = {
     ],
     "paltalabs": [
         # Javascript packages
-        {"filename": "package.json", "keyword": "\\\"mercury-sdk"},
+        {"filename": "package.json", "keyword": '\\"mercury-sdk'},
     ],
-    "soneso": [
-    ],
+    "soneso": [],
     "stellar": [
         ## All of our various SDKs
         ## See: https://developers.stellar.org/docs/tools/sdks/library
@@ -97,20 +97,22 @@ SEARCH_QUERIES: dict[str, list[dict[str, str]]] = {
         # {"filename": "build.gradle", "keyword": "scala-stellar-sdk"}, # already covered with Java SDK
         # Qt/C++
         # (this has been unmaintained for a while, but is it useful to still include?)
-        {"path": "*.pro", "keyword": "StellarQtSDK.pri"}
+        {"path": "*.pro", "keyword": "StellarQtSDK.pri"},
     ],
 }
+
 
 def main():
     print(DISCLAIMER_MESSAGE)
     answer = input("Is your locally cloned repo ready? ")
 
-    if answer.lower() == 'yes' or answer.lower() == 'y':
+    if answer.lower() == "yes" or answer.lower() == "y":
         from crawler.ecosystem import process_ecosystem
+
         logger.info("Main function started.")
         process_ecosystem(BASE_ECOSYSTEM)
 
-    elif answer.lower() == 'no' or answer.lower() == 'n':
+    elif answer.lower() == "no" or answer.lower() == "n":
         print("That's fine. Run the script again once you're ready.")
 
     else:

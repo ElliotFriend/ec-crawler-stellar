@@ -1,4 +1,5 @@
 import logging
+
 logger = logging.getLogger(__name__)
 
 import os
@@ -10,11 +11,13 @@ from crawler.tomlkit import parse_toml_file, save_toml_file
 
 BASE_REPO_PATH: str = os.getenv("BASE_REPO_PATH")
 
+
 def parse_eco_filename(ecosystem_name: str) -> list[str]:
     return [
         ecosystem_name[0].lower(),
-        "-".join(ecosystem_name.split()).lower().replace("(", "").replace(")", "")
+        "-".join(ecosystem_name.split()).lower().replace("(", "").replace(")", ""),
     ]
+
 
 def process_ecosystem(ecosystem_name: str):
     ecosystem_repos: set[str] = set()

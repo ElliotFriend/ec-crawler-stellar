@@ -1,4 +1,5 @@
 import logging
+
 logger = logging.getLogger(__name__)
 
 from crawler.crawler import SEARCH_QUERIES, GITHUB_TOKEN
@@ -11,6 +12,7 @@ BASE_URL: str = "https://github.com/"
 auth = Auth.Token(GITHUB_TOKEN)
 g = Github(auth=auth)
 g.per_page = 100
+
 
 def build_search_query(query: dict[str, str]) -> str:
     """Build a search query string based on the given criteria."""
@@ -25,9 +27,10 @@ def build_search_query(query: dict[str, str]) -> str:
 
     return " ".join(query_parts)
 
+
 def get_org_repos(org_url: str) -> set[str]:
     org_repos: set[str] = set()
-    org_name = org_url.split('/')[-1]
+    org_name = org_url.split("/")[-1]
 
     logger.info("Retrieving GH Org repos for %s", org_name)
     try:
@@ -38,6 +41,7 @@ def get_org_repos(org_url: str) -> set[str]:
         pass
 
     return org_repos
+
 
 def search_gh_repos(ecosystem_name: str) -> set[str]:
     found_repos: set[str] = set()
