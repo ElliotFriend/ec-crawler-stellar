@@ -48,7 +48,6 @@ SEARCH_QUERIES: dict[str, list[dict[str, str]]] = {
         # Javascript packages
         {"filename": "package.json", "keyword": '\\"mercury-sdk'},
     ],
-    "soneso": [],
     "stellar": [
         ## All of our various SDKs
         ## See: https://developers.stellar.org/docs/tools/sdks/library
