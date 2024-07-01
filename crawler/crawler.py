@@ -1,4 +1,6 @@
-"""## Crawler
+"""
+Crawler
+-------
 
 The entry point of the package! Here, we grab the Github token, defined the base
 (or 'starting') ecosystem we'll crawl, configure logging, and make sure the user

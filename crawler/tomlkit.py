@@ -3,7 +3,8 @@ Tomlkit
 -------
 
 Abstractions to ease the reading/writing of the necessary TOML file. These
-functions are wrappers around the `tomlkit` package.
+functions are wrappers around the [`tomlkit`](https://pypi.org/project/tomlkit/)
+package.
 """
 
 import logging

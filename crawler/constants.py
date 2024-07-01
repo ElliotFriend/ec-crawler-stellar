@@ -18,9 +18,16 @@ load_dotenv()
 
 # Constants and configurations
 GITHUB_TOKEN: str | None = os.getenv("GITHUB_TOKEN")
+"""The Personal Access Token used to authenticate with Github APIs."""
+
 BASE_REPO_PATH: str | None = os.getenv("BASE_REPO_PATH")
+"""The local, absolute path to the EC repository."""
+
 BASE_GITHUB_URL: str = "https://github.com/"
+"""Base URL for Github URLs."""
+
 BASE_ECOSYSTEM: str = "Stellar"
+"""The crypto ecosystem's TOML file which will be processed first."""
 
 SEARCH_QUERIES: dict[str, list[dict[str, str]]] = {
     "cheesecake-labs": [
@@ -82,6 +89,7 @@ SEARCH_QUERIES: dict[str, list[dict[str, str]]] = {
         {"path": "*.pro", "keyword": "StellarQtSDK.pri"},
     ],
 }
+"""A collection of ecosystems and their relevant search queries."""
 
 DISCLAIMER_MESSAGE: str = """Welcome to the Stellar EC Scraper!
 
@@ -101,3 +109,4 @@ local clone. So, you might just double-check...
 
 Please confirm below with '[y]es' or '[n]o'
 """
+"""The disclaimer that should be presented to the user at the start of the script."""

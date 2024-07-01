@@ -16,6 +16,10 @@ format:
 	pre-commit run --all-file
 .PHONY: format
 
+docs:
+	poetry run pdoc ./crawler -o ./docs
+.PHONY: docs
+
 lint:
 	@echo ♻️ Reformatting Code
 	poetry run black .

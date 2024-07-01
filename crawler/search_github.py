@@ -1,6 +1,6 @@
 """
-Github
-------
+Search Github
+-------------
 
 This module is primarily concerned with Github-related matters. We retrieve all
 of an org's public repositories, build search queries from the defined
@@ -25,14 +25,12 @@ g.per_page = 100
 def build_search_query(query: dict[str, str]) -> str:
     """Build a search query string based on the given criteria.
 
-    :param query: The dictionary of query qualifiers, keyed by available `Github
-        API search query qualifiers`_
+    :param query: The dictionary of query qualifiers, keyed by available Github
+        `API search query qualifiers
+        <https://docs.github.com/search-github/searching-on-github/searching-code>`_
     :type query: dict[str, str]
     :return: The formatted query string to use in the Github search request.
     :rtype: str
-
-    _Github API search query qualifiers:
-        https://docs.github.com/search-github/searching-on-github/searching-code
     """
     query_parts: list[str] = []
 
