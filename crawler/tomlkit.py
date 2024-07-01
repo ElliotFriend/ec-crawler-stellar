@@ -33,7 +33,7 @@ def parse_toml_file(filepath: str) -> dict:
         "doc": doc,
         "sub_ecos": sub_ecos,
         "gh_orgs": gh_orgs,
-        "repo": repo,
+        "repo": repo.unwrap(),
     }
 
 
