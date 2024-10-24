@@ -48,6 +48,7 @@ SEARCH_QUERIES: dict[str, list[dict[str, str]]] = {
         {"filename": "package.json", "keyword": "as-soroban-sdk"},
         {"filename": "package.json", "keyword": "soroban-client"},
         {"filename": "package.json", "keyword": "@creit.tech/stellar-wallets-kit"},
+        {"filename": "package.json", "keyword": "passkey-kit"},
         # Python
         {"filename": "requirements.txt", "keyword": "stellar_sdk"},
         {"filename": "pyproject.toml", "keyword": "stellar_sdk"},
