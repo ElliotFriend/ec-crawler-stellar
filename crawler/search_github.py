@@ -4,7 +4,7 @@ Search Github
 
 This module is primarily concerned with Github-related matters. We retrieve all
 of an org's public repositories, build search queries from the defined
-`SEARCH_QUERIES` dictionary in `crawler.py`, and page through code search
+`SEARCH_QUERIES` dictionary in `constants.py`, and page through code search
 results.
 """
 
