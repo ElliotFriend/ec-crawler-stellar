@@ -36,6 +36,7 @@ SEARCH_QUERIES: dict[str, list[dict[str, str]]] = {
     "paltalabs": [
         # Javascript packages
         {"filename": "package.json", "keyword": '\\"mercury-sdk'},
+        {"filename": "package.json", "keyword": "@soroban-react"},
     ],
     "stellar": [
         ## All of our various SDKs
@@ -45,6 +46,8 @@ SEARCH_QUERIES: dict[str, list[dict[str, str]]] = {
         {"filename": "package.json", "keyword": "stellar-base"},
         {"filename": "package.json", "keyword": "@stellar/typescript-wallet-sdk"},
         {"filename": "package.json", "keyword": "as-soroban-sdk"},
+        {"filename": "package.json", "keyword": "soroban-client"},
+        {"filename": "package.json", "keyword": "@creit.tech/stellar-wallets-kit"},
         # Python
         {"filename": "requirements.txt", "keyword": "stellar_sdk"},
         {"filename": "pyproject.toml", "keyword": "stellar_sdk"},
