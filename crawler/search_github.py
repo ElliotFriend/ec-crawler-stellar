@@ -41,6 +41,7 @@ def build_search_query(query: dict[str, str]) -> str:
     if "keyword" in query:
         query_parts.append(f"{query['keyword']}")
 
+    query_parts.append("sort:updated")
     return " ".join(query_parts)
 
 
