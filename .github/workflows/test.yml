@@ -1,0 +1,39 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: pre-commit/action@v3.0.0
+
+  test:
+    needs: pre-commit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Validate package
+        run: |
+          poetry run python -c 'import crawler; print(crawler.__package__ + " successfully imported")'
+
+      - name: Type checks with MyPy
+        run: |
+          poetry run mypy crawler/
+
+      - name: Style checks with PyLint
+        run: |
+          poetry run pylint ./crawler/**/*.py
