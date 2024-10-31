@@ -72,8 +72,8 @@ def count_all_repos(parent_ecosystem: str) -> None:
     all_sets = get_ecosystem_repos(parent_ecosystem)
     all_repos: set[str] = set()
 
-    for eco in all_sets:
-        all_repos.update(all_sets[eco])
+    for repos in all_sets.values():
+        all_repos.update(repos)
 
     logger.info(
         "Tracking %d repositories across the entire %s parent ecosystem.",
@@ -89,9 +89,9 @@ def get_ecosystem_contributors(ecosystem_name: str) -> dict[str, set[str]]:
 
     ecosystem_repos_sets = get_ecosystem_repos(ecosystem_name)
 
-    for eco in ecosystem_repos_sets:
+    for eco, repos in ecosystem_repos_sets.items():
         logger.info("Counting contributors for ecosystem: %s", eco)
-        contributors = get_contributors(ecosystem_repos_sets[eco])
+        contributors = get_contributors(repos)
         contributor_sets[eco] = contributors
         logger.info(
             "Found %d recent contributors in the %s ecosystem", len(contributors), eco
@@ -110,8 +110,8 @@ def count_all_contributors(parent_ecosystem: str) -> None:
     all_sets = get_ecosystem_contributors(parent_ecosystem)
     all_contributors: set[str] = set()
 
-    for eco in all_sets:
-        all_contributors.update([c for c in all_sets[eco] if "[bot]" not in c])
+    for repos in all_sets.values():
+        all_contributors.update([c for c in repos if "[bot]" not in c])
 
     logger.info(
         "Found %d recent contributors across the entire %s parent ecosystem.",

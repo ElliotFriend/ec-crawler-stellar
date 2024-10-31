@@ -126,7 +126,9 @@ def get_contributors(ecosystem_repos_set: set[str]) -> set[str]:
                     else:
                         print(f"weird nonetype thing? {commit.html_url}")
                         continue
-                    contributors.add(committer.lower())
+
+                    if committer:
+                        contributors.add(committer.lower())
         except UnknownObjectException as err:
             logger.exception(
                 "GithubException.UnknownObjectException encountered: %s", err
