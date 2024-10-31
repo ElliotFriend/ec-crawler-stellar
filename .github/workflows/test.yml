@@ -23,6 +23,11 @@ jobs:
       - name: Install Poetry
         run: pipx install poetry
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Install dependencies
         run: poetry install
 
