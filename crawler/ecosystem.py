@@ -40,10 +40,10 @@ def process_ecosystem(ecosystem_name: str) -> None:
     filepath: str = f"{BASE_REPO_PATH}/data/ecosystems/{ecosystem[0]}/{ecosystem}.toml"
 
     # 0. load/parse the TOML
-    doc, sub_ecos, gh_orgs, repo = itemgetter("doc", "sub_ecos", "gh_orgs", "repo")(
+    doc, sub_ecos, gh_orgs, repos = itemgetter("doc", "sub_ecos", "gh_orgs", "repos")(
         parse_toml_file(filepath)
     )
-    current_repos: set[str] = set(r["url"] for r in repo)
+    current_repos: set[str] = set(r["url"] for r in repos)
 
     # 1. recurse into subecosystems
     for sub_eco in sub_ecos:
@@ -69,7 +69,7 @@ def process_ecosystem(ecosystem_name: str) -> None:
     # 4. sort and add new_repos to toml repo, save to disk
     logger.info("Found %d new repositories.", len(new_repos))
     repo_list = list({"url": r} for r in new_repos)
-    repo.extend(repo_list)
-    repo.sort(key=lambda x: x["url"].lower())
-    doc.update({"repo": repo})
+    repos.extend(repo_list)
+    repos.sort(key=lambda x: x["url"].lower())
+    doc.update({"repo": repos})
     save_toml_file(doc, filepath)

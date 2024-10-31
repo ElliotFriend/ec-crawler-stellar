@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "crawler"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 authors = ["Elliot Voris <elliot@stellar.org>"]
 readme = "README.md"
@@ -35,4 +35,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-crawl = "crawler.crawler:main"
+crawl = "crawler.crawler:crawl"
+count_repos = "crawler.crawler:count_repos"
+count_contrib = "crawler.crawler:count_contributors"
+main = "crawler.crawler:main"

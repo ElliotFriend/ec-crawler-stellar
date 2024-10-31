@@ -42,7 +42,12 @@ updates the local copy of `stellar.toml` with newly discovered projects.
 
 ## Usage
 
-Run `poetry run crawl` on the root folder. The script then:
+### GitHub Crawl
+
+This script can search github for newly added Organization repositories, as well
+as gather search results for various relevant dependencies.
+
+Run `poetry run crawl` in the root folder. The script then:
 
 1. Initializes and loads environment variables.
 2. Reads the local `stellar.toml` file.
@@ -55,10 +60,42 @@ Run `poetry run crawl` on the root folder. The script then:
 8. Follows the same process for all defined `sub_ecosystems` in the
    `stellar.toml` file (and `sub_sub_etc_ecosystems`, too).
 
+### Ecosystem Repositories Count
+
+This script can count the currently tracked repositories for the ecosystem (as
+well as sub-ecosystems).
+
+Run `poetry run count_repos` in the root folder. The script then:
+
+1. Initializes and loads environment variables.
+2. Reads the local `stellar.toml` file.
+3. Searches defined GitHub organizations, retrieving all public repositories.
+4. Counts all repositories within the given ecosystem, logging the info.
+5. Follows the same process for all defined `sub_ecosystems` in the
+   `stellar.toml` file (and `sub_sub_etc_ecosystems`, too).
+
+### Ecosystem Contributors Count
+
+> This will also run the repositories count script as part of the process.
+
+This script can count the recent (within the previous 28 days) contributors in
+the ecosystem (as well as sub-ecosystems).
+
+Run `poetry run count_contrib` in the root folder. The script then:
+
+1. Runs the repository count functionality as outlined above.
+2. Iterates through all retrieved repositories for the parent and sub
+   ecosystems.
+3. For all un-archived Github repos, it searches for the previous 28-days-worth
+   of commits, and tracks unique committers.
+4. Filters out `[bot]` committers and logs a count of unique ecosystem-wide
+   contributors.
+
 ## Output
 
 - Logs of the process.
-- Updates any relevant `*.toml` file **in-place**.
+- Updates any relevant `*.toml` file **in-place** (in the case of the Github
+  Crawl script).
 
 ## Error Handling
 
@@ -66,7 +103,8 @@ Run `poetry run crawl` on the root folder. The script then:
 
 ## Source
 
-This script is a heavily customized fork of a similar Aave-related repository by
+This script is a **heavily** customized fork of a similar Aave-related
+repository by
 **[@tolgayayci](https://github.com/tolgayayci/ec-crawler-aave)**.
 
 ---

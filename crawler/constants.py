@@ -95,7 +95,7 @@ SEARCH_QUERIES: dict[str, list[dict[str, str]]] = {
 }
 """A collection of ecosystems and their relevant search queries."""
 
-DISCLAIMER_MESSAGE: str = """Welcome to the Stellar EC Scraper!
+DISCLAIMER_MESSAGE: str = """Github Crawler: HEADS UP!
 
 This script will modify the relevant ecosystem TOML file(s) **in place**. So,
 it's really important that you have done three (3) things:
@@ -113,4 +113,24 @@ local clone. So, you might just double-check...
 
 Please confirm below with '[y]es' or '[n]o'
 """
-"""The disclaimer that should be presented to the user at the start of the script."""
+"""The disclaimer that should be presented to the user at the start of the
+script.
+"""
+
+
+CHOOSE_WHAT_TO_DO_MESSAGE: str = """Welcome to the Stellar EC Crawler & Counter!
+
+You have some options, as to what you want to do:
+
+1. Crawl through some Github code search results and add missing or new
+   repositories to your local clone of the `electric-capital/crypto-ecosystems`
+   repo.
+2. Count tracked repositories within the Stellar (parent) ecosystem, or
+3. Count recent contributors (within the last 28 days) within the Stellar
+   (parent) ecosystem (includes counting repos), or
+
+Which script would you like to run?
+"""
+"""The prompt that should be presented to the user who just begins by calling
+the script, instead of a specific function.
+"""

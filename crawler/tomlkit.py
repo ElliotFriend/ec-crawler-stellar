@@ -28,13 +28,13 @@ def parse_toml_file(filepath: str) -> dict:
     doc = file.read()
     sub_ecos = doc.get("sub_ecosystems")
     gh_orgs = doc.get("github_organizations")
-    repo = doc.get("repo")
+    repos = doc.item("repo")
 
     return {
         "doc": doc,
         "sub_ecos": sub_ecos,
         "gh_orgs": gh_orgs,
-        "repo": repo.unwrap(),
+        "repos": repos.unwrap(),
     }
 
 
