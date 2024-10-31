@@ -127,7 +127,7 @@ def get_contributors(ecosystem_repos_set: set[str]) -> set[str]:
                         print(f"weird nonetype thing? {commit.html_url}")
                         continue
 
-                    if committer:
+                    if committer and "[bot]" not in committer:
                         contributors.add(committer.lower())
         except UnknownObjectException as err:
             logger.exception(

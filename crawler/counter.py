@@ -111,7 +111,7 @@ def count_all_contributors(parent_ecosystem: str) -> None:
     all_contributors: set[str] = set()
 
     for repos in all_sets.values():
-        all_contributors.update([c for c in repos if "[bot]" not in c])
+        all_contributors.update(repos)
 
     logger.info(
         "Found %d recent contributors across the entire %s parent ecosystem.",

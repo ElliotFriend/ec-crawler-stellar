@@ -48,7 +48,7 @@ def count_repos():
 def count_contributors():
     """Count all contributors within the entire parent ecosystem."""
     logger.info("Counting contributors")
-    count_all_contributors(BASE_ECOSYSTEM)
+    count_all_contributors("PaltaLabs")
 
 
 def crawl():
