@@ -129,9 +129,9 @@ def get_contributors(ecosystem_repos_set: set[str]) -> set[str]:
 
                     if committer and "[bot]" not in committer:
                         contributors.add(committer.lower())
-        except UnknownObjectException as err:
+        except UnknownObjectException:
             logger.exception(
-                "GithubException.UnknownObjectException encountered: %s", err
+                "GithubException.UnknownObjectException encountered: %s", repo
             )
         except GithubException as err:
             if err.status == 409:

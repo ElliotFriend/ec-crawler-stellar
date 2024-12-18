@@ -118,4 +118,3 @@ def count_all_contributors(parent_ecosystem: str) -> None:
         len(all_contributors),
         parent_ecosystem,
     )
-    print(f"contrib: {all_contributors}")
