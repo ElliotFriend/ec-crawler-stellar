@@ -112,10 +112,10 @@ def get_contributors(ecosystem_repos_set: set[str]) -> set[str]:
             repository = g.get_repo(f"{owner}/{project}")
             if (
                 not repository.archived
-                and now - timedelta(days=28) <= repository.updated_at <= now
+                and now - timedelta(days=30) <= repository.updated_at <= now
             ):
                 commits = repository.get_commits(
-                    since=datetime.datetime.now() - timedelta(days=28),
+                    since=datetime.datetime.now() - timedelta(days=30),
                     until=datetime.datetime.now(),
                 )
                 for commit in commits:
