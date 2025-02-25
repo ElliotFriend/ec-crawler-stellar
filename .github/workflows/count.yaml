@@ -1,0 +1,36 @@
+name: Count Repos and Contributors
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: '0 0 * * *'
+
+permissions: read-all
+
+jobs:
+  count:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Clone EC Repo
+        uses: actions/checkout@v4
+        with:
+          repository: 'electric-capital/crypto-ecosystems'
+          path: 'ec-repo'
+
+      - name: Set up environment
+        run: |
+          echo "BASE_REPO_PATH=${GITHUB_WORKSPACE}/ec-repo" >> "$GITHUB_ENV"
+
+      - name: Run the count script
+        run: poetry run count_contrib
