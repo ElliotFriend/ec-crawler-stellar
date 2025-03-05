@@ -78,7 +78,7 @@ Run `poetry run count_repos` in the root folder. The script then:
 
 > This will also run the repositories count script as part of the process.
 
-This script can count the recent (within the previous 28 days) contributors in
+This script can count the recent (within the previous 30 days) contributors in
 the ecosystem (as well as sub-ecosystems).
 
 Run `poetry run count_contrib` in the root folder. The script then:
