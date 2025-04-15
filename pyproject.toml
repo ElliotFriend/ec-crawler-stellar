@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "crawler"
-version = "0.2.0"
+version = "1.2.0"
 description = ""
 authors = ["Elliot Voris <elliot@stellar.org>"]
 readme = "README.md"
