@@ -25,19 +25,27 @@ updates the local copy of `stellar.toml` with newly discovered projects.
 - This package was made using [Poetry](https://python-poetry.org/). You'll
   probably have the best results if you use it for this, too.
 - A GitHub personal access token
+- This script has been newly upgraded to work alongside `v2.x` of the official
+  Electric capital ecosystems repo. Make sure you're using the updated branch.
 
 ## Setup
 
 1. **Clone the EC Repository:** If you haven't already, you should make a local
    clone of the [EC repo](https://github.com/electric-capital/crypto-ecosystems)
    (or your own fork of it, more likely).
-2. **Create a new EC Branch:** You're probably best off checking out a new
+2. **Export the relevant ecosystem taxonomy:** With `v2` of the EC repo,
+   taxonomies are not bundled into toml files, but instead use a
+   "domain-specific language" (DSL) to track and collect repositories into
+   ecosystems. Before using this package, you should export the taxonomy for the
+   ecosystem you're attempting to update. For example, from the EC repo, you
+   would run something like `./run.sh export -e Stellar stellar.jsonl`.
+3. **Create a new EC Branch:** You're probably best off checking out a new
    branch of the EC repo before you run this script. Base it off `master` (and
    make sure that's up-to-date, while you're at it), and call it whatever you
    like.
-3. **Environment Variables:** Set `GITHUB_TOKEN` and `BASE_REPO_PATH` in
+4. **Environment Variables:** Set `GITHUB_TOKEN` and `BASE_REPO_PATH` in
    a `.env` file. (You can copy `.env.example` to `.env`, and edit it)
-4. **Dependencies:** Install required Python libraries with `poetry install`
+5. **Dependencies:** Install required Python libraries with `poetry install`
    command.
 
 ## Usage
@@ -76,7 +84,7 @@ Run `poetry run count_repos` in the root folder. The script then:
 
 ### Ecosystem Contributors Count
 
-> This will also run the repositories count script as part of the process.
+> This will also run the `count_repos` script as part of the process.
 
 This script can count the recent (within the previous 30 days) contributors in
 the ecosystem (as well as sub-ecosystems).

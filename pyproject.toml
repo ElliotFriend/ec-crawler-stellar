@@ -7,21 +7,21 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-python-dotenv = "^1.0.1"
+python-dotenv = "^1.1.0"
 requests = "^2.32.3"
 toml = "^0.10.2"
-pygithub = "^2.3.0"
-tomlkit = "^0.12.5"
+pygithub = "^2.6.1"
+tomlkit = "^0.13.2"
 
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.2.2"
-black = "^24.4.2"
-mypy = "^1.10.0"
-pylint = "^3.2.3"
-pdoc = "^14.5.1"
-isort = "^5.13.2"
-types-requests = "^2.32.0.20240622"
+pytest = "^8.3.5"
+black = "^25.1.0"
+mypy = "^1.15.0"
+pylint = "^3.3.6"
+pdoc = "^15.0.1"
+isort = "^6.0.1"
+types-requests = "^2.32.0.20250328"
 types-toml = "^0.10.8.20240310"
 
 [tool.pylint.format]

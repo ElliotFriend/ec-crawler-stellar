@@ -27,7 +27,7 @@ BASE_GITHUB_URL: str = "https://github.com/"
 """Base URL for Github URLs."""
 
 BASE_ECOSYSTEM: str = "Stellar"
-"""The crypto ecosystem's TOML file which will be processed first."""
+"""The crypto ecosystem which will be processed as the parent."""
 
 SEARCH_QUERIES: dict[str, list[dict[str, str]]] = {
     "cheesecake-labs": [

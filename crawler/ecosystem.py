@@ -6,70 +6,119 @@ The main workhorse of the package! This module is responsible for managing the
 process of the crawl.
 """
 
+import json
 import logging
-from operator import itemgetter
+import shlex
+import subprocess
+from datetime import datetime
+from os import getcwd
+from typing import TypedDict
 
-from crawler.constants import BASE_REPO_PATH
-from crawler.search_github import get_org_repos, search_gh_repos
-from crawler.tomlkit import parse_toml_file, save_toml_file
+from crawler.constants import BASE_ECOSYSTEM, BASE_REPO_PATH
+from crawler.search_github import search_gh_repos
 
 logger = logging.getLogger(__name__)
+
+
+class RepoJson(TypedDict):
+    eco_name: str
+    branch: list[str]
+    repo_url: str
+    tags: list[str]
 
 
 def parse_eco_filename(ecosystem_name: str) -> str:
     """Parse the provided ecosystem name into a filepath-like string.
 
-    :param ecosystem_name: The name of the ecosystem, as written in an EC TOML
-        file.
+    :param ecosystem_name: The name of the ecosystem, as written in the EC
+        taxonomy DSL mutations.
     :type ecosystem_name: str
-    :return: A filepath-friendly string of the ecosystem name..
+    :return: A filepath-friendly string of the ecosystem name.
     :rtype: str
     """
     return "-".join(ecosystem_name.split()).lower().replace("(", "").replace(")", "")
 
 
-def process_ecosystem(ecosystem_name: str) -> None:
+def run_export_ecosystem(ecosystem_name: str) -> list[RepoJson]:
+    """Export the jsonl file for the ecosystem and return it as a list
+
+    :param ecosystem_name: The name of the ecosystem, as written in the EC
+        taxonomy DSL mutations.
+    :type ecosystem_name: str
+    :return: The exported taxonomy of repositories, as a list of typed dicts.
+    :rtype: list[RepoJson]
+    """
+    ecosystem = parse_eco_filename(ecosystem_name)
+    filepath: str = f"{getcwd()}/out/{ecosystem}.jsonl"
+
+    command = shlex.split(
+        f'./run.sh export -e "{ecosystem_name}" {filepath}'
+        # f'./run.sh export -e "{ecosystem_name}" -m 2025-04-01 {filepath}'
+    )
+    p = subprocess.Popen(command, cwd=BASE_REPO_PATH)
+    p.wait()
+
+    with open(filepath, "r") as file:
+        repos_list: list[RepoJson] = [json.loads(l) for l in list(file)]
+
+    return repos_list
+
+
+def find_sub_ecosystems(repos_list: list[RepoJson]) -> set[str]:
+    """Find the unique sub-ecosystems in an ecosystem's taxonomy file.
+
+    :param repos_list: The list of all repos in an ecosystem.
+    :type repos_list: list[RepoJson]
+    :return: The unique "branches" for all the ecosystem's repos.
+    :rtype: set[str]
+    """
+    return set(branch for repo in repos_list for branch in repo["branch"])
+
+
+def process_ecosystem(ecosystem_name: str, is_sub_eco: bool = False) -> None:
     """Process the ecosystem, managing the entire process.
 
-    :param ecosystem_name: The name of the ecosystem, as written in an EC TOML
-        file.
+    :param ecosystem_name: The name of the ecosystem, as written in the EC
+        taxonomy DSL mutations.
     :type ecosystem_name: str
     """
     ecosystem_repos: set[str] = set()
     ecosystem = parse_eco_filename(ecosystem_name)
-    filepath: str = f"{BASE_REPO_PATH}/data/ecosystems/{ecosystem[0]}/{ecosystem}.toml"
 
-    # 0. load/parse the TOML
-    doc, sub_ecos, gh_orgs, repos = itemgetter("doc", "sub_ecos", "gh_orgs", "repos")(
-        parse_toml_file(filepath)
-    )
-    current_repos: set[str] = set(r["url"] for r in repos)
+    # 0. export the jsonl file for the ecosystem and read/load it for use here
+    repos_list = run_export_ecosystem(ecosystem_name)
+    current_repos: set[str] = set(r["repo_url"] for r in repos_list)
 
     # 1. recurse into subecosystems
-    for sub_eco in sub_ecos:
-        process_ecosystem(sub_eco)
+    branches = find_sub_ecosystems(repos_list)
+
+    for branch in branches:
+        process_ecosystem(ecosystem_name=branch, is_sub_eco=True)
 
     logger.info("Processing ecosystem: %s", ecosystem)
 
-    # 2. add github org repos
-    for org in gh_orgs:
-        org_repos = get_org_repos(org)
-        ecosystem_repos.update(org_repos)
-
-    # 3. add search results
+    # 1. add search results
     found_repos = search_gh_repos(ecosystem)
     ecosystem_repos.update(found_repos)
 
-    # 4. Check if there are any new repos to add to the toml file.
+    # 2. Check if there are any new repos to add to the taxonomy.
     new_repos = ecosystem_repos.difference(current_repos)
     if len(new_repos) == 0:
         logger.info("No new repositories found")
         return
 
-    # 4. sort and add new_repos to toml repo, save to disk
+    # 3. sort and add new_repos to a taxonomy mutation, save to disk
     logger.info("Found %d new repositories.", len(new_repos))
-    repo_list = list({"url": r} for r in new_repos)
-    repos.extend(repo_list)
-    repos.sort(key=lambda x: x["url"].lower())
-    doc.update({"repo": repos})
-    save_toml_file(doc, filepath)
+    repo_list = list(new_repos)
+    mutation_filepath = f"{BASE_REPO_PATH}/migrations/{datetime.today().strftime('%Y-%m-%d')}T235959_{BASE_ECOSYSTEM}_mutations"
+    use_quotes = " " in ecosystem_name
+    quoted_ecosystem_name = (
+        f"{"\"" if use_quotes else ""}{ecosystem_name}{"\"" if use_quotes else ""}"
+    )
+    logger.info("quoted_ecosystem_name: %s", quoted_ecosystem_name)
+
+    with open(mutation_filepath, "a+") as f:
+        for repo in repo_list:
+            # the DSL looks like: `repadd "Aquarius (AQUA token)" https://github.com/AquaToken/aqua-airdrop-checker`
+            dsl_text = f"repadd {quoted_ecosystem_name} {repo}"
+            f.write("%s\n" % dsl_text)

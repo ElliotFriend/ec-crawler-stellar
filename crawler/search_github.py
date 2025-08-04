@@ -10,19 +10,21 @@ results.
 
 import datetime
 import logging
-from datetime import timedelta
 
 from github import Auth, Github, GithubException
 from github.GithubException import UnknownObjectException
 
 from crawler.constants import BASE_GITHUB_URL, GITHUB_TOKEN, SEARCH_QUERIES
 
-logging.getLogger("github.Requester").setLevel(logging.WARNING)
+logging.getLogger("github.Requester").setLevel(logging.CRITICAL)
 logger = logging.getLogger(__name__)
 
 auth = Auth.Token(GITHUB_TOKEN) if GITHUB_TOKEN else None
-g = Github(auth=auth)
-g.per_page = 100
+g = Github(
+    auth=auth,
+    per_page=100,
+    seconds_between_requests=0,
+)
 
 
 def build_search_query(query: dict[str, str]) -> str:
@@ -104,27 +106,35 @@ def get_contributors(ecosystem_repos_set: set[str]) -> set[str]:
     """
     contributors: set[str] = set()
     for repo in ecosystem_repos_set:
+        logger.debug("checking for commits in repo: %s", repo)
         project = repo.split("/")[-1]
         owner = repo.split("/")[-2]
 
         try:
             now = datetime.datetime.now(datetime.timezone.utc)
+            # now = datetime.datetime(2025, 4, 1, 0, 0, tzinfo=datetime.timezone.utc)
+            thirty_days_ago = now - datetime.timedelta(days=30)
+            # thirty_days_ago = datetime.datetime(
+            #     2025, 3, 1, 0, 0, tzinfo=datetime.timezone.utc
+            # )
             repository = g.get_repo(f"{owner}/{project}")
             if (
-                not repository.archived
-                and now - timedelta(days=30) <= repository.updated_at <= now
+                repository
+                and repository.pushed_at
+                and not repository.archived
+                and thirty_days_ago <= repository.pushed_at
             ):
                 commits = repository.get_commits(
-                    since=datetime.datetime.now() - timedelta(days=30),
-                    until=datetime.datetime.now(),
+                    since=thirty_days_ago,
+                    until=now,
                 )
                 for commit in commits:
                     if commit.author:
-                        committer = commit.author.login or commit.author.name
+                        committer = commit.author.login
                     elif commit.commit.author:
                         committer = commit.commit.author.name
                     else:
-                        print(f"weird nonetype thing? {commit.html_url}")
+                        logger.info(f"weird nonetype thing? {commit.html_url}")
                         continue
 
                     if committer and "[bot]" not in committer:
@@ -138,7 +148,7 @@ def get_contributors(ecosystem_repos_set: set[str]) -> set[str]:
                 logger.exception(
                     "GithubException %d encountered (probably an empty repo): %s",
                     409,
-                    err,
+                    repo,
                 )
             else:
                 logger.exception("GithubException encountered: %s", err)
