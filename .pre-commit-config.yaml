@@ -6,13 +6,13 @@ repos:
         args: [--in-place, --ignore-init-module-imports, --remove-all-unused-imports]
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
+    rev: 6.0.1
     hooks:
       - id: isort
 
   # Using this mirror lets us use mypyc-compiled black, which is about 2x faster
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 24.4.2
+    rev: 25.1.0
     hooks:
       - id: black
         # It is recommended to specify the latest version of Python
@@ -22,7 +22,7 @@ repos:
         language_version: python3.12
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.10.1'
+    rev: 'v1.17.1'
     hooks:
       - id: mypy
         additional_dependencies: [types-requests==2.32.0.20240622, types-toml==0.10.8.20240310]
