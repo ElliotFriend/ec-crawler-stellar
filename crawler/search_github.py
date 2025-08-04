@@ -134,7 +134,7 @@ def get_contributors(ecosystem_repos_set: set[str]) -> set[str]:
                     elif commit.commit.author:
                         committer = commit.commit.author.name
                     else:
-                        logger.info(f"weird nonetype thing? {commit.html_url}")
+                        logger.info("weird nonetype thing? %s", commit.html_url)
                         continue
 
                     if committer and "[bot]" not in committer:

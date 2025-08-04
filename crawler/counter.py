@@ -8,8 +8,11 @@ Take a stab at actually counting the repos/contributors in the ecosystem.
 import logging
 from os import getcwd
 
-from crawler.constants import BASE_REPO_PATH
-from crawler.ecosystem import parse_eco_filename, run_export_ecosystem, find_sub_ecosystems
+from crawler.ecosystem import (
+    find_sub_ecosystems,
+    parse_eco_filename,
+    run_export_ecosystem,
+)
 from crawler.search_github import get_contributors
 
 logger = logging.getLogger(__name__)
@@ -29,7 +32,7 @@ def get_ecosystem_repos(ecosystem_name: str) -> dict[str, set[str]]:
 
     # 1. recurse into the subecosystems
     sub_ecos = find_sub_ecosystems(repos_list)
-    if len(sub_ecos):
+    if len(sub_ecos) > 0:
         for sub_eco in sub_ecos:
             sub_repos = get_ecosystem_repos(sub_eco)
             ecosystem_sets[sub_eco] = sub_repos[sub_eco]

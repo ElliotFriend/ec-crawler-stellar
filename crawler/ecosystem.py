@@ -21,6 +21,8 @@ logger = logging.getLogger(__name__)
 
 
 class RepoJson(TypedDict):
+    """A dictionary representing each repo in the EC taxonomy."""
+
     eco_name: str
     branch: list[str]
     repo_url: str
@@ -110,7 +112,8 @@ def process_ecosystem(ecosystem_name: str, is_sub_eco: bool = False) -> None:
     # 3. sort and add new_repos to a taxonomy mutation, save to disk
     logger.info("Found %d new repositories.", len(new_repos))
     repo_list = list(new_repos)
-    mutation_filepath = f"{BASE_REPO_PATH}/migrations/{datetime.today().strftime('%Y-%m-%d')}T235959_{BASE_ECOSYSTEM}_mutations"
+    mutation_name = f"{datetime.today().strftime('%Y-%m-%d')}T235959_{BASE_ECOSYSTEM}"
+    mutation_filepath = f"{BASE_REPO_PATH}/migrations/{mutation_name}_mutations"
     use_quotes = " " in ecosystem_name
     quoted_ecosystem_name = (
         f"{"\"" if use_quotes else ""}{ecosystem_name}{"\"" if use_quotes else ""}"
@@ -119,6 +122,6 @@ def process_ecosystem(ecosystem_name: str, is_sub_eco: bool = False) -> None:
 
     with open(mutation_filepath, "a+") as f:
         for repo in repo_list:
-            # the DSL looks like: `repadd "Aquarius (AQUA token)" https://github.com/AquaToken/aqua-airdrop-checker`
+            # the DSL looks like: `repadd "Aquarius (AQUA token)" https://github.com...`
             dsl_text = f"repadd {quoted_ecosystem_name} {repo}"
-            f.write("%s\n" % dsl_text)
+            f.write(f"{dsl_text}\n")
