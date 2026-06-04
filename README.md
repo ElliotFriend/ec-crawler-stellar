@@ -2,85 +2,103 @@
 
 ## Overview
 
-This crawler script, designed for the Electric Capital Crypto Ecosystems
-repository, assists in the process of updating the list of Stellar-related
-projects on GitHub. It identifies new projects using specific Stellar
-dependencies, compares them with the existing list in `stellar.toml`, and
-updates the local copy of `stellar.toml` with newly discovered projects.
+This crawler script, designed for the Electric Capital
+[Open Dev Data](https://github.com/electric-capital/open-dev-data) repository
+(formerly `crypto-ecosystems`), assists in the process of updating the list of
+Stellar-related projects on GitHub. It identifies new projects using specific
+Stellar dependencies, compares them against the current Stellar taxonomy, and
+writes any newly discovered projects to a new taxonomy **mutations file**.
 
 ## Features
 
-- **Intelligent Filtering:** Adds only new projects not already listed in
-  `stellar.toml`.
+- **Intelligent Filtering:** Adds only new repositories not already tracked in
+  the exported Stellar taxonomy.
 - **Rate Limit Handling:** Uses the `pygithub` package, which handles
   pagination, rate limiting, and authentication.
-- **Github Organization Crawling:** Crawls for all public repositories in
-  defined Github organizations, adding new repositories to the toml file.
-- **Sub-Ecosystem Crawling:** Recurses into the relevant `*.toml` files for
-  defined sub-ecosystems, and does the same crawl for them.
+- **Sub-Ecosystem Crawling:** Recurses into the sub-ecosystems found in the
+  exported taxonomy (via each repo's `branch`) and crawls them the same way.
+- **Mutations Output:** Writes additions as `repadd` lines in a single dated
+  mutations file under the Open Dev Data `migrations/` directory, ready to be
+  validated and submitted as a PR.
 
 ## Requirements
 
 - Python 3.x (v3.12 is probably best)
-- This package was made using [Poetry](https://python-poetry.org/). You'll
-  probably have the best results if you use it for this, too.
+- This package was made using [uv](https://docs.astral.sh/uv/). You'll probably
+  have the best results if you use it for this, too.
 - A GitHub personal access token
-- This script has been newly upgraded to work alongside `v2.x` of the official
-  Electric capital ecosystems repo. Make sure you're using the updated branch.
+- A local clone of [Open Dev Data](https://github.com/electric-capital/open-dev-data)
+  and [`uv`](https://docs.astral.sh/uv/) installed (the Open Dev Data CLI, which
+  this script shells out to for taxonomy exports, runs via `uv`).
 
 ## Setup
 
-1. **Clone the EC Repository:** If you haven't already, you should make a local
-   clone of the [EC repo](https://github.com/electric-capital/crypto-ecosystems)
-   (or your own fork of it, more likely).
-2. **Export the relevant ecosystem taxonomy:** With `v2` of the EC repo,
-   taxonomies are not bundled into toml files, but instead use a
-   "domain-specific language" (DSL) to track and collect repositories into
-   ecosystems. Before using this package, you should export the taxonomy for the
-   ecosystem you're attempting to update. For example, from the EC repo, you
-   would run something like `./run.sh export -e Stellar stellar.jsonl`.
-3. **Create a new EC Branch:** You're probably best off checking out a new
-   branch of the EC repo before you run this script. Base it off `master` (and
-   make sure that's up-to-date, while you're at it), and call it whatever you
-   like.
-4. **Environment Variables:** Set `GITHUB_TOKEN` and `BASE_REPO_PATH` in
-   a `.env` file. (You can copy `.env.example` to `.env`, and edit it)
-5. **Dependencies:** Install required Python libraries with `poetry install`
+1. **Clone the Open Dev Data Repository:** If you haven't already, make a local
+   clone of the
+   [Open Dev Data repo](https://github.com/electric-capital/open-dev-data) (or
+   your own fork, more likely).
+2. **Create a new branch:** You're best off checking out a new branch of the
+   Open Dev Data repo before you run this script. Base it off `main` (and make
+   sure that's up-to-date, while you're at it), and call it whatever you like.
+   The script writes a new mutations file rather than editing existing files, so
+   the diff stays clean and easy to review.
+3. **Environment Variables:** Set `GITHUB_TOKEN` and `BASE_REPO_PATH` (the
+   absolute path to your Open Dev Data clone) in a `.env` file. (You can copy
+   `.env.example` to `.env`, and edit it.)
+4. **Dependencies:** Install required Python libraries with the `uv sync`
    command.
+
+## How the taxonomy works now
+
+Open Dev Data no longer bundles ecosystems into `*.toml` files. Instead, the
+taxonomy is built from an ordered series of **migration files** that use a small
+domain-specific language (DSL), e.g.:
+
+```text
+ecoadd Stellar
+repadd Stellar https://github.com/stellar/stellar-core
+ecocon Stellar "Aquarius (AQUA token)"
+```
+
+This crawler reads the current state by **exporting** the taxonomy to JSONL
+(shelling out to `./run.sh export -e Stellar <file>` in the Open Dev Data repo),
+and writes its additions as a new mutations file full of `repadd` lines.
 
 ## Usage
 
 ### GitHub Crawl
 
-This script can search github for newly added Organization repositories, as well
-as gather search results for various relevant dependencies.
+This script searches GitHub code for various Stellar-related dependencies and
+proposes any newly found repositories as taxonomy additions.
 
-Run `poetry run crawl` in the root folder. The script then:
+Run `uv run crawl` in the root folder. The script then:
 
 1. Initializes and loads environment variables.
-2. Reads the local `stellar.toml` file.
-3. Searches defined GitHub organizations, retrieving all public repositories.
-4. Searches GitHub for repositories with specified Stellar-related packages.
-5. Compares and filters found repositories against `stellar.toml`.
-6. Sorts all repositories, so you can more easily pass `make validate` in the EC
-   repo.
-7. Updates the `stellar.toml` file **in-place**, overwriting current contents.
-8. Follows the same process for all defined `sub_ecosystems` in the
-   `stellar.toml` file (and `sub_sub_etc_ecosystems`, too).
+2. Exports the current Stellar taxonomy to JSONL (via the Open Dev Data CLI) and
+   reads the set of already-tracked repositories.
+3. Recurses into every sub-ecosystem found in the export (via each repo's
+   `branch`).
+4. Searches GitHub for repositories using specified Stellar-related packages
+   (see `SEARCH_QUERIES` in `crawler/constants.py`).
+5. Compares and filters found repositories against the exported taxonomy.
+6. Writes any new repositories as `repadd` lines into a single dated mutations
+   file under `<BASE_REPO_PATH>/migrations/`.
+
+After running, validate the result from the Open Dev Data repo with
+`./run.sh validate`, then open a PR with the new mutations file.
 
 ### Ecosystem Repositories Count
 
 This script can count the currently tracked repositories for the ecosystem (as
 well as sub-ecosystems).
 
-Run `poetry run count_repos` in the root folder. The script then:
+Run `uv run count_repos` in the root folder. The script then:
 
 1. Initializes and loads environment variables.
-2. Reads the local `stellar.toml` file.
-3. Searches defined GitHub organizations, retrieving all public repositories.
-4. Counts all repositories within the given ecosystem, logging the info.
-5. Follows the same process for all defined `sub_ecosystems` in the
-   `stellar.toml` file (and `sub_sub_etc_ecosystems`, too).
+2. Exports the current Stellar taxonomy to JSONL (via the Open Dev Data CLI).
+3. Counts all repositories within the given ecosystem, logging the info.
+4. Follows the same process for every sub-ecosystem found in the export (and
+   their sub-ecosystems, too).
 
 ### Ecosystem Contributors Count
 
@@ -89,7 +107,7 @@ Run `poetry run count_repos` in the root folder. The script then:
 This script can count the recent (within the previous 30 days) contributors in
 the ecosystem (as well as sub-ecosystems).
 
-Run `poetry run count_contrib` in the root folder. The script then:
+Run `uv run count_contrib` in the root folder. The script then:
 
 1. Runs the repository count functionality as outlined above.
 2. Iterates through all retrieved repositories for the parent and sub
@@ -102,8 +120,9 @@ Run `poetry run count_contrib` in the root folder. The script then:
 ## Output
 
 - Logs of the process.
-- Updates any relevant `*.toml` file **in-place** (in the case of the Github
-  Crawl script).
+- A new dated mutations file under `<BASE_REPO_PATH>/migrations/` containing
+  `repadd` lines for the newly discovered repositories (in the case of the
+  GitHub Crawl script).
 
 ## Error Handling
 

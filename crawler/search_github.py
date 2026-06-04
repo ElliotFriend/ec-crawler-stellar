@@ -14,7 +14,7 @@ import logging
 from github import Auth, Github, GithubException
 from github.GithubException import UnknownObjectException
 
-from crawler.constants import BASE_GITHUB_URL, GITHUB_TOKEN, SEARCH_QUERIES
+from crawler.constants import GITHUB_TOKEN, SEARCH_QUERIES
 
 logging.getLogger("github.Requester").setLevel(logging.CRITICAL)
 logger = logging.getLogger(__name__)
@@ -48,29 +48,6 @@ def build_search_query(query: dict[str, str]) -> str:
 
     query_parts.append("sort:updated")
     return " ".join(query_parts)
-
-
-def get_org_repos(org_url: str) -> set[str]:
-    """Retrieve all of a Github organization's public repositories.
-
-    :param org_url: The full URL of a Github organization.
-    :type org_url: str
-    :return: A set of unique repository URLs belonging to the Github
-        organization.
-    :rtype: set[str]
-    """
-    org_repos: set[str] = set()
-    org_name = org_url.split("/")[-1]
-
-    logger.info("Retrieving GH Org repos for %s", org_name)
-    try:
-        repos = g.get_organization(org_name).get_repos()
-        for repo in repos:
-            org_repos.add(f"{BASE_GITHUB_URL}{repo.full_name}")
-    except UnknownObjectException:
-        pass
-
-    return org_repos
 
 
 def search_gh_repos(ecosystem_name: str) -> set[str]:

@@ -4,12 +4,12 @@ default: ;
 
 validate:
 	@echo ✅ validate package
-	poetry run python -c 'import crawler; print(crawler.__package__ + " successfully imported")'
+	uv run python -c 'import crawler; print(crawler.__package__ + " successfully imported")'
 .PHONY: validate
 
 test:
 	@echo 🧪 Type Checks with MyPy
-	poetry run mypy crawler/
+	uv run mypy crawler/
 .PHONY: test
 
 format:
@@ -17,14 +17,14 @@ format:
 .PHONY: format
 
 docs:
-	poetry run pdoc ./crawler -o ./docs
+	uv run pdoc ./crawler -o ./docs
 .PHONY: docs
 
 lint:
 	@echo ♻️ Reformatting Code
-	poetry run black .
+	uv run black .
 	@echo ✅  Style Checks with PyLint
-	poetry run pylint ./crawler/**/*.py
+	uv run pylint ./crawler/**/*.py
 .PHONY: lint
 
 all: validate test lint

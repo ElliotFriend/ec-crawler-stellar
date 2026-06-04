@@ -157,4 +157,3 @@ cython_debug/
 # Other stuff
 .DS_Store
 /out*
-/od

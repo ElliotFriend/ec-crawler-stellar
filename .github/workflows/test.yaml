@@ -15,20 +15,20 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install Poetry
-        run: pipx install poetry
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
       - name: Install dependencies
-        run: poetry install
+        run: uv sync
 
       - name: Validate package
         run: |
-          poetry run python -c 'import crawler; print(crawler.__package__ + " successfully imported")'
+          uv run python -c 'import crawler; print(crawler.__package__ + " successfully imported")'
 
       - name: Type checks with MyPy
         run: |
-          poetry run mypy crawler/
+          uv run mypy crawler/
 
       - name: Style checks with PyLint
         run: |
-          poetry run pylint ./crawler/**/*.py
+          uv run pylint ./crawler/**/*.py
