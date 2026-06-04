@@ -9,9 +9,7 @@ readme = "README.md"
 python = "^3.12"
 python-dotenv = "^1.1.1"
 requests = "^2.32.4"
-toml = "^0.10.2"
 pygithub = "^2.7.0"
-tomlkit = "^0.13.3"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -22,7 +20,6 @@ pylint = "^3.3.7"
 pdoc = "^15.0.4"
 isort = "^6.0.1"
 types-requests = "^2.32.4.20250611"
-types-toml = "^0.10.8.20240310"
 
 [tool.pylint.format]
 max-line-length = "88"

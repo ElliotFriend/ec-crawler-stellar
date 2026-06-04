@@ -23,9 +23,6 @@ GITHUB_TOKEN: str | None = os.getenv("GITHUB_TOKEN")
 BASE_REPO_PATH: str | None = os.getenv("BASE_REPO_PATH")
 """The local, absolute path to the EC repository."""
 
-BASE_GITHUB_URL: str = "https://github.com/"
-"""Base URL for Github URLs."""
-
 BASE_ECOSYSTEM: str = "Stellar"
 """The crypto ecosystem which will be processed as the parent."""
 
@@ -97,16 +94,17 @@ SEARCH_QUERIES: dict[str, list[dict[str, str]]] = {
 
 DISCLAIMER_MESSAGE: str = """Github Crawler: HEADS UP!
 
-This script will modify the relevant ecosystem TOML file(s) **in place**. So,
-it's really important that you have done three (3) things:
+This script will write a new taxonomy mutations file into the `migrations/`
+directory of your local Open Dev Data clone. So, it's really important that you
+have done three (3) things:
 
 1. You have specified in the `.env` file, the absolute path to your local clone
-   of the EC repo, and
-2. Your local clone's `master` branch is up-to-date with the upstream EC repo,
-   and
+   of the Open Dev Data repo, and
+2. Your local clone's `main` branch is up-to-date with the upstream Open Dev
+   Data repo, and
 3. You should also check out a new branch your changes can be applied to. (This
-   script won't apply any changes to your repo, but it could make it easier on
-   you later if you're already on a new branch.)
+   script only adds a new mutations file, but it's easier on you later if you're
+   already on a new branch.)
 
 If you haven't done those three (3) things, you could possibly screw up your
 local clone. So, you might just double-check...
@@ -123,7 +121,7 @@ CHOOSE_WHAT_TO_DO_MESSAGE: str = """Welcome to the Stellar EC Crawler & Counter!
 You have some options, as to what you want to do:
 
 1. Crawl through some Github code search results and add missing or new
-   repositories to your local clone of the `electric-capital/crypto-ecosystems`
+   repositories to your local clone of the `electric-capital/open-dev-data`
    repo.
 2. Count tracked repositories within the Stellar (parent) ecosystem, or
 3. Count recent contributors (within the last 28 days) within the Stellar
