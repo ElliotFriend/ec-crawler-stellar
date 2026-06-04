@@ -12,9 +12,9 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "python-dotenv>=1.1.1,<2",
-    "requests>=2.32.4,<3",
-    "pygithub>=2.7.0,<3",
+    "pygithub>=2.9.1,<3.0.0",
+    "python-dotenv>=1.2.2,<2.0.0",
+    "requests>=2.34.2,<3.0.0",
 ]
 
 [project.scripts]
@@ -25,13 +25,13 @@ main = "crawler.crawler:main"
 
 [dependency-groups]
 dev = [
-    "pytest>=8.4.1,<9",
-    "black>=25.1.0,<26",
-    "mypy>=1.17.1,<2",
-    "pylint>=3.3.7,<4",
-    "pdoc>=15.0.4,<16",
-    "isort>=6.0.1,<7",
-    "types-requests>=2.32.4.20250611,<3",
+    "black>=26.5.1,<27.0.0",
+    "isort>=8.0.1,<9.0.0",
+    "mypy>=2.1.0,<3.0.0",
+    "pdoc>=16.0.0,<17.0.0",
+    "pylint>=4.0.5,<5.0.0",
+    "pytest>=9.0.3,<10.0.0",
+    "types-requests>=2.33.0.20260518,<3.0.0.0",
 ]
 
 [tool.uv]
@@ -43,6 +43,9 @@ module-root = ""
 [build-system]
 requires = ["uv_build>=0.11.18,<0.12.0"]
 build-backend = "uv_build"
+
+[tool.black]
+target-version = ["py312", "py313", "py314"]
 
 [tool.pylint.format]
 max-line-length = "88"
