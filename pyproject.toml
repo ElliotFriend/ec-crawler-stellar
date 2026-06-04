@@ -1,38 +1,51 @@
-[tool.poetry]
+[project]
 name = "crawler"
 version = "2.0.0"
 description = ""
-authors = ["Elliot Voris <elliot@stellar.org>"]
+authors = [{ name = "Elliot Voris", email = "elliot@stellar.org" }]
+requires-python = ">=3.12,<4"
 readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "python-dotenv>=1.1.1,<2",
+    "requests>=2.32.4,<3",
+    "pygithub>=2.7.0,<3",
+]
 
-[tool.poetry.dependencies]
-python = "^3.12"
-python-dotenv = "^1.1.1"
-requests = "^2.32.4"
-pygithub = "^2.7.0"
+[project.scripts]
+crawl = "crawler.crawler:crawl"
+count_repos = "crawler.crawler:count_repos"
+count_contrib = "crawler.crawler:count_contributors"
+main = "crawler.crawler:main"
 
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1,<9",
+    "black>=25.1.0,<26",
+    "mypy>=1.17.1,<2",
+    "pylint>=3.3.7,<4",
+    "pdoc>=15.0.4,<16",
+    "isort>=6.0.1,<7",
+    "types-requests>=2.32.4.20250611,<3",
+]
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.4.1"
-black = "^25.1.0"
-mypy = "^1.17.1"
-pylint = "^3.3.7"
-pdoc = "^15.0.4"
-isort = "^6.0.1"
-types-requests = "^2.32.4.20250611"
+[tool.uv]
+default-groups = "all"
+
+[tool.uv.build-backend]
+module-root = ""
+
+[build-system]
+requires = ["uv_build>=0.11.18,<0.12.0"]
+build-backend = "uv_build"
 
 [tool.pylint.format]
 max-line-length = "88"
 
 [tool.isort]
 profile = "black"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
-crawl = "crawler.crawler:crawl"
-count_repos = "crawler.crawler:count_repos"
-count_contrib = "crawler.crawler:count_contributors"
-main = "crawler.crawler:main"

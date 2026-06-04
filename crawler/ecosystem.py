@@ -75,7 +75,7 @@ def run_export_ecosystem(ecosystem_name: str) -> list[RepoJson]:
             f"BASE_REPO_PATH a valid Open Dev Data clone?"
         )
 
-    with open(filepath, "r") as file:
+    with open(filepath, "r", encoding="utf-8") as file:
         repos_list: list[RepoJson] = [json.loads(l) for l in list(file)]
 
     return repos_list
@@ -90,6 +90,28 @@ def find_sub_ecosystems(repos_list: list[RepoJson]) -> set[str]:
     :rtype: set[str]
     """
     return set(branch for repo in repos_list for branch in repo["branch"])
+
+
+def write_repadd_mutations(ecosystem_name: str, repos: list[str]) -> str:
+    """Append `repadd` lines for the given repos to today's mutation file.
+
+    :param ecosystem_name: The ecosystem to attribute the repos to, as written
+        in the Open Dev Data taxonomy DSL.
+    :param repos: The repository URLs to add.
+    :return: The path of the mutation file that was written.
+    """
+    mutation_name = f"{datetime.today().strftime('%Y-%m-%d')}T235959_{BASE_ECOSYSTEM}"
+    mutation_filepath = f"{BASE_REPO_PATH}/migrations/{mutation_name}_mutations"
+
+    # the DSL quotes ecosystem names containing spaces, e.g.
+    # `repadd "Aquarius (AQUA token)" https://github.com/...`
+    name = f'"{ecosystem_name}"' if " " in ecosystem_name else ecosystem_name
+
+    with open(mutation_filepath, "a+", encoding="utf-8") as f:
+        for repo in repos:
+            f.write(f"repadd {name} {repo}\n")
+
+    return mutation_filepath
 
 
 def process_ecosystem(ecosystem_name: str) -> None:
@@ -126,17 +148,5 @@ def process_ecosystem(ecosystem_name: str) -> None:
 
     # 3. sort and add new_repos to a taxonomy mutation, save to disk
     logger.info("Found %d new repositories.", len(new_repos))
-    repo_list = list(new_repos)
-    mutation_name = f"{datetime.today().strftime('%Y-%m-%d')}T235959_{BASE_ECOSYSTEM}"
-    mutation_filepath = f"{BASE_REPO_PATH}/migrations/{mutation_name}_mutations"
-    use_quotes = " " in ecosystem_name
-    quoted_ecosystem_name = (
-        f"{"\"" if use_quotes else ""}{ecosystem_name}{"\"" if use_quotes else ""}"
-    )
-    logger.info("quoted_ecosystem_name: %s", quoted_ecosystem_name)
-
-    with open(mutation_filepath, "a+") as f:
-        for repo in repo_list:
-            # the DSL looks like: `repadd "Aquarius (AQUA token)" https://github.com...`
-            dsl_text = f"repadd {quoted_ecosystem_name} {repo}"
-            f.write(f"{dsl_text}\n")
+    mutation_filepath = write_repadd_mutations(ecosystem_name, sorted(new_repos))
+    logger.info("Wrote mutations to %s", mutation_filepath)

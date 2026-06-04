@@ -24,8 +24,8 @@ writes any newly discovered projects to a new taxonomy **mutations file**.
 ## Requirements
 
 - Python 3.x (v3.12 is probably best)
-- This package was made using [Poetry](https://python-poetry.org/). You'll
-  probably have the best results if you use it for this, too.
+- This package was made using [uv](https://docs.astral.sh/uv/). You'll probably
+  have the best results if you use it for this, too.
 - A GitHub personal access token
 - A local clone of [Open Dev Data](https://github.com/electric-capital/open-dev-data)
   and [`uv`](https://docs.astral.sh/uv/) installed (the Open Dev Data CLI, which
@@ -45,7 +45,7 @@ writes any newly discovered projects to a new taxonomy **mutations file**.
 3. **Environment Variables:** Set `GITHUB_TOKEN` and `BASE_REPO_PATH` (the
    absolute path to your Open Dev Data clone) in a `.env` file. (You can copy
    `.env.example` to `.env`, and edit it.)
-4. **Dependencies:** Install required Python libraries with the `poetry install`
+4. **Dependencies:** Install required Python libraries with the `uv sync`
    command.
 
 ## How the taxonomy works now
@@ -71,7 +71,7 @@ and writes its additions as a new mutations file full of `repadd` lines.
 This script searches GitHub code for various Stellar-related dependencies and
 proposes any newly found repositories as taxonomy additions.
 
-Run `poetry run crawl` in the root folder. The script then:
+Run `uv run crawl` in the root folder. The script then:
 
 1. Initializes and loads environment variables.
 2. Exports the current Stellar taxonomy to JSONL (via the Open Dev Data CLI) and
@@ -92,7 +92,7 @@ After running, validate the result from the Open Dev Data repo with
 This script can count the currently tracked repositories for the ecosystem (as
 well as sub-ecosystems).
 
-Run `poetry run count_repos` in the root folder. The script then:
+Run `uv run count_repos` in the root folder. The script then:
 
 1. Initializes and loads environment variables.
 2. Exports the current Stellar taxonomy to JSONL (via the Open Dev Data CLI).
@@ -107,7 +107,7 @@ Run `poetry run count_repos` in the root folder. The script then:
 This script can count the recent (within the previous 30 days) contributors in
 the ecosystem (as well as sub-ecosystems).
 
-Run `poetry run count_contrib` in the root folder. The script then:
+Run `uv run count_contrib` in the root folder. The script then:
 
 1. Runs the repository count functionality as outlined above.
 2. Iterates through all retrieved repositories for the parent and sub

@@ -54,7 +54,7 @@ def get_ecosystem_repos(ecosystem_name: str) -> dict[str, set[str]]:
 
     # 3. store the findings
     out_filepath: str = f"{getcwd()}/out/dumps/repos/{ecosystem}.txt"
-    with open(out_filepath, "w") as f:
+    with open(out_filepath, "w", encoding="utf-8") as f:
         f.writelines(f"{repo}\n" for repo in ecosystem_sets[ecosystem_name])
 
     # 3. return the sets, so it can be combined/grand-totalled
@@ -95,7 +95,7 @@ def get_ecosystem_contributors(ecosystem_name: str) -> dict[str, set[str]]:
         )
 
         out_filepath: str = f"{getcwd()}/out/dumps/contribs/{eco}.txt"
-        with open(out_filepath, "w") as f:
+        with open(out_filepath, "w", encoding="utf-8") as f:
             f.writelines(f"{contrib}\n" for contrib in contributors)
 
     return contributor_sets
