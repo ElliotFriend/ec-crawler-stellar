@@ -60,8 +60,8 @@ def run_export_ecosystem(ecosystem_name: str) -> list[RepoJson]:
 
     # Open Dev Data's `run.sh` runs the CLI directly when it detects an active
     # virtualenv (`VIRTUAL_ENV`), otherwise it falls back to `uv run`. When this
-    # crawler is launched via `poetry run`, `VIRTUAL_ENV` points at the crawler's
-    # own venv -- which does NOT have the `open-dev-data` CLI installed -- so the
+    # crawler is launched via `uv run`, `VIRTUAL_ENV` points at the crawler's
+    # own venv, which does NOT have the `open-dev-data` CLI installed, so the
     # export would fail. Strip it from the subprocess env to force the `uv run`
     # path, which resolves the CLI from the Open Dev Data project itself.
     env = {k: v for k, v in os.environ.items() if k != "VIRTUAL_ENV"}
@@ -100,7 +100,9 @@ def write_repadd_mutations(ecosystem_name: str, repos: list[str]) -> str:
     :param repos: The repository URLs to add.
     :return: The path of the mutation file that was written.
     """
-    mutation_name = f"{datetime.today().strftime('%Y-%m-%d')}T235959_{BASE_ECOSYSTEM}"
+    mutation_name = (
+        f"{datetime.today().strftime('%Y-%m-%d')}T235959_{BASE_ECOSYSTEM.lower()}"
+    )
     mutation_filepath = f"{BASE_REPO_PATH}/migrations/{mutation_name}_mutations"
 
     # the DSL quotes ecosystem names containing spaces, e.g.
@@ -114,25 +116,34 @@ def write_repadd_mutations(ecosystem_name: str, repos: list[str]) -> str:
     return mutation_filepath
 
 
-def process_ecosystem(ecosystem_name: str) -> None:
+def process_ecosystem(ecosystem_name: str, seen_repos: set[str] | None = None) -> None:
     """Process the ecosystem, managing the entire process.
 
     :param ecosystem_name: The name of the ecosystem, as written in the Open Dev
         Data taxonomy DSL mutations.
     :type ecosystem_name: str
+    :param seen_repos: Lower-cased repo URLs already emitted earlier in this
+        crawl. Shared across the recursive calls so a repo found under multiple
+        ecosystems (e.g. a sub-ecosystem *and* its parent) is only added once,
+        to the first (most specific) ecosystem that claims it. Callers should
+        omit this; it is seeded automatically on the top-level call.
+    :type seen_repos: set[str] | None
     """
+    if seen_repos is None:
+        seen_repos = set()
+
     ecosystem_repos: set[str] = set()
     ecosystem = parse_eco_filename(ecosystem_name)
 
     # 0. export the jsonl file for the ecosystem and read/load it for use here
     repos_list = run_export_ecosystem(ecosystem_name)
-    current_repos: set[str] = set(r["repo_url"] for r in repos_list)
+    current_repos: set[str] = set(r["repo_url"].lower() for r in repos_list)
 
     # 1. recurse into subecosystems
     branches = find_sub_ecosystems(repos_list)
 
     for branch in branches:
-        process_ecosystem(ecosystem_name=branch)
+        process_ecosystem(ecosystem_name=branch, seen_repos=seen_repos)
 
     logger.info("Processing ecosystem: %s", ecosystem)
 
@@ -140,13 +151,19 @@ def process_ecosystem(ecosystem_name: str) -> None:
     found_repos = search_gh_repos(ecosystem)
     ecosystem_repos.update(found_repos)
 
-    # 2. Check if there are any new repos to add to the taxonomy.
-    new_repos = ecosystem_repos.difference(current_repos)
+    # 2. Keep repos that are neither already in the taxonomy nor already emitted
+    #    earlier in this crawl (both compared case-insensitively).
+    new_repos = {
+        repo
+        for repo in ecosystem_repos
+        if repo.lower() not in current_repos and repo.lower() not in seen_repos
+    }
     if len(new_repos) == 0:
         logger.info("No new repositories found")
         return
 
     # 3. sort and add new_repos to a taxonomy mutation, save to disk
+    seen_repos.update(repo.lower() for repo in new_repos)
     logger.info("Found %d new repositories.", len(new_repos))
     mutation_filepath = write_repadd_mutations(ecosystem_name, sorted(new_repos))
     logger.info("Wrote mutations to %s", mutation_filepath)

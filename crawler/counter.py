@@ -41,8 +41,11 @@ def get_ecosystem_repos(ecosystem_name: str) -> dict[str, set[str]]:
     existing_repos: set[str] = set()
     for repos in ecosystem_sets.values():
         existing_repos.update(repos)
+    existing_repos_lower = {repo.lower() for repo in existing_repos}
     ecosystem_sets[ecosystem_name].update(
-        r["repo_url"] for r in repos_list if r["repo_url"] not in existing_repos
+        r["repo_url"]
+        for r in repos_list
+        if r["repo_url"].lower() not in existing_repos_lower
     )
 
     # 2. log the findings
