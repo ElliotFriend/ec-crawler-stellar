@@ -42,10 +42,13 @@ SEARCH_QUERIES: dict[str, list[dict[str, str]]] = {
         {"filename": "package.json", "keyword": "stellar-sdk"},
         {"filename": "package.json", "keyword": "stellar-base"},
         {"filename": "package.json", "keyword": "@stellar/typescript-wallet-sdk"},
+        {"filename": "package.json", "keyword": "@stellar/freighter-api"},
         {"filename": "package.json", "keyword": "as-soroban-sdk"},
         {"filename": "package.json", "keyword": "soroban-client"},
         {"filename": "package.json", "keyword": "@creit.tech/stellar-wallets-kit"},
+        {"filename": "package.json", "keyword": "@creit-tech/stellar-assets-sdk"},
         {"filename": "package.json", "keyword": "passkey-kit"},
+        {"filename": "package.json", "keyword": "smart-account-kit"},
         # Python
         {"filename": "requirements.txt", "keyword": "stellar_sdk"},
         {"filename": "pyproject.toml", "keyword": "stellar_sdk"},
@@ -53,12 +56,25 @@ SEARCH_QUERIES: dict[str, list[dict[str, str]]] = {
         {"filename": "pyproject.toml", "keyword": "stellar-sdk"},
         # Rust
         {"filename": "Cargo.toml", "keyword": "soroban-sdk"},
+        {"filename": "Cargo.toml", "keyword": "stellar-xdr"},
+        {"filename": "Cargo.toml", "keyword": "stellar-strkey"},
+        {"filename": "Cargo.toml", "keyword": "soroban-client"},
+        {"filename": "Cargo.toml", "keyword": "rs-stellar-rpc-client"},
+        {"filename": "Cargo.toml", "keyword": "stellar-tokens"},
+        {"filename": "Cargo.toml", "keyword": "stellar-access"},
+        {"filename": "Cargo.toml", "keyword": "stellar-contract-utils"},
+        {"filename": "Cargo.toml", "keyword": "stellar-governance"},
+        {"filename": "Cargo.toml", "keyword": "stellar-accounts"},
+        {"filename": "Cargo.toml", "keyword": "stellar-fee-abstraction"},
+        {"filename": "Cargo.toml", "keyword": "stellar-macros"},
+        {"filename": "Cargo.toml", "keyword": "stellar-axelar-std"},
         # Kotlin
         {"filename": "build.gradle.kts", "keyword": "org.stellar:wallet-sdk"},
         # Flutter
         {"filename": "pubspec.yaml", "keyword": "stellar_flutter_sdk"},
         {"filename": "pubspec.yaml", "keyword": "stellar_wallet_flutter_sdk"},
         # Swift
+        {"filename": "Package.swift", "keyword": "stellar-wallet-sdk"},
         {"filename": "Package.swift", "keyword": "stellar-ios-mac-sdk"},
         {"filename": "Cartfile", "keyword": "stellar-ios-mac-sdk"},
         {"filename": "Podfile", "keyword": "stellar-ios-mac-sdk"},
@@ -71,8 +87,7 @@ SEARCH_QUERIES: dict[str, list[dict[str, str]]] = {
         {"filename": "pom.xml", "keyword": "stellar-sdk"},
         {"filename": "build.gradle", "keyword": "stellar-sdk"},
         # Go
-        {"filename": "go.mod", "keyword": "stellar/go/txnbuild"},
-        {"filename": "go.mod", "keyword": "stellar/go/clients/horizonclient"},
+        {"filename": "go.mod", "keyword": "go-stellar-sdk"},
         # Ruby
         {"filename": "Gemfile", "keyword": "stellar-sdk"},
         # C#
