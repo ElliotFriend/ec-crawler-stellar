@@ -20,11 +20,18 @@ logging.getLogger("github.Requester").setLevel(logging.CRITICAL)
 logger = logging.getLogger(__name__)
 
 auth = Auth.Token(GITHUB_TOKEN) if GITHUB_TOKEN else None
-g = Github(
-    auth=auth,
-    per_page=100,
-    seconds_between_requests=0,
-)
+g = {
+    "code": Github(
+        auth=auth,
+        per_page=100,
+        seconds_between_requests=7.1,
+    ),
+    "contrib": Github(
+        auth=auth,
+        per_page=100,
+        seconds_between_requests=0,
+    ),
+}
 
 
 def build_search_query(query: dict[str, str]) -> str:
@@ -65,8 +72,7 @@ def search_gh_repos(ecosystem_name: str) -> set[str]:
         for query in SEARCH_QUERIES[ecosystem_name]:
             search = build_search_query(query)
             logger.debug("Searching for %s", search)
-            code_results = g.search_code(search)
-            logger.debug("Found %d code results", code_results.totalCount)
+            code_results = g["code"].search_code(search)
             for res in code_results:
                 found_repos.add(res.repository.html_url)
 
@@ -94,7 +100,7 @@ def get_contributors(ecosystem_repos_set: set[str]) -> set[str]:
             # thirty_days_ago = datetime.datetime(
             #     2025, 3, 1, 0, 0, tzinfo=datetime.timezone.utc
             # )
-            repository = g.get_repo(f"{owner}/{project}")
+            repository = g["contrib"].get_repo(f"{owner}/{project}")
             if (
                 repository
                 and repository.pushed_at
